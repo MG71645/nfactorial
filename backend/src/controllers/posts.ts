@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { v4 as uuidv4 } from 'uuid';
-import { db, dbGet, dbAll, dbRun } from '../utils/database.js';
+import { dbGet, dbAll, dbRun } from '../utils/postgres.js';
 import { AuthRequest } from '../middleware/auth.js';
 
 export const getPosts = async (req: Request, res: Response) => {

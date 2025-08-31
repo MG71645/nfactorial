@@ -9,6 +9,7 @@ import { postRoutes } from './routes/posts.js';
 import { commentRoutes } from './routes/comments.js';
 import { likeRoutes } from './routes/likes.js';
 import { subscriptionRoutes } from './routes/subscriptions.js';
+import { testConnection } from './utils/postgres.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -51,6 +52,13 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Bailanysta backend server running on port ${PORT}`);
+  
+  // Проверяем подключение к базе данных
+  if (process.env.NODE_ENV === 'production') {
+    await testConnection();
+  } else {
+    console.log('🔧 Development mode: Using SQLite database');
+  }
 });

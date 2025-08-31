@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { db, dbGet, dbAll, dbRun } from '../utils/database.js';
+import { dbGet, dbAll, dbRun } from '../utils/postgres.js';
 import { AuthRequest } from '../middleware/auth.js';
 
 export const getUser = async (req: Request, res: Response) => {

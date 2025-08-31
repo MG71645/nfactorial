@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { db, dbGet, dbRun } from '../utils/database.js';
+import { dbGet, dbRun } from '../utils/postgres.js';
 import { AuthRequest } from '../middleware/auth.js';
 
 export const toggleLike = async (req: AuthRequest, res: Response) => {
