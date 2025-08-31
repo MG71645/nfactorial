@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useTheme } from '../contexts/ThemeContext'
 import { useAuth } from '../contexts/AuthContext'
 import { Sun, Moon, Home, User, LogOut, LogIn, UserPlus } from 'lucide-react'
+import LanguageSwitcher from './LanguageSwitcher'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -61,6 +62,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Right Side */}
             <div className="flex items-center space-x-4">
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+
               {/* Theme Toggle */}
               <motion.button
                 whileHover={{ scale: 1.05 }}

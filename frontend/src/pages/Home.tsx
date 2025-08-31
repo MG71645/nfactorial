@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 import PostCard from '../components/PostCard'
 import CreatePost from '../components/CreatePost'
 import { Post } from '../../../shared/types'
 
 const Home: React.FC = () => {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const [posts, setPosts] = useState<Post[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -66,10 +68,10 @@ const Home: React.FC = () => {
         className="text-center"
       >
         <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-4">
-          Welcome to Bailanysta
+          {t('home.hero.title')}
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Share your thoughts, connect with others, and discover amazing content in our modern social media platform.
+          {t('home.hero.subtitle')}
         </p>
       </motion.div>
 
@@ -92,13 +94,13 @@ const Home: React.FC = () => {
         className="space-y-6"
       >
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Latest Posts
+          {t('home.feed.title')}
         </h2>
         
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-gray-400 dark:text-gray-500 text-lg">
-              No posts yet. Be the first to share something!
+              {t('home.feed.empty')}
             </div>
           </div>
         ) : (
