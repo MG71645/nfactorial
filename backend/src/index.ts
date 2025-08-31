@@ -1,3 +1,6 @@
+// Загружаем переменные окружения
+import 'dotenv/config';
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -9,7 +12,7 @@ import { postRoutes } from './routes/posts.js';
 import { commentRoutes } from './routes/comments.js';
 import { likeRoutes } from './routes/likes.js';
 import { subscriptionRoutes } from './routes/subscriptions.js';
-import { testConnection } from './utils/postgres.js';
+import { testConnection } from './utils/database-hybrid.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,12 +24,12 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-app.use(morgan('combined'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100') // limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 
