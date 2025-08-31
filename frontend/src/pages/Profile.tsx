@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import PostCard from '../components/PostCard'
 import CreatePost from '../components/CreatePost'
 import { Post } from '../../../shared/types'
-import { Edit3, Camera } from 'lucide-react'
+import { Edit3 } from 'lucide-react'
 
 const Profile: React.FC = () => {
   const { user } = useAuth()
@@ -82,13 +82,8 @@ const Profile: React.FC = () => {
       >
         <div className="flex items-start space-x-6">
           {/* Avatar */}
-          <div className="relative">
-            <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
-            <button className="absolute bottom-0 right-0 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
-              <Camera size={16} className="text-gray-600 dark:text-gray-400" />
-            </button>
+          <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center text-white text-3xl font-bold">
+            {user.username.charAt(0).toUpperCase()}
           </div>
 
           {/* Profile Info */}
