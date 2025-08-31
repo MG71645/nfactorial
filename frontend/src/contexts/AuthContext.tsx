@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data: AuthResponse = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed')
+        throw new Error(data.error || 'Login failed')
       }
 
       if (data.data) {
@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const data: AuthResponse = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Registration failed')
+        throw new Error(data.error || 'Registration failed')
       }
 
       if (data.data) {

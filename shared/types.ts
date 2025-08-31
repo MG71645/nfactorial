@@ -44,8 +44,12 @@ export interface Subscription {
 }
 
 export interface AuthResponse {
-  user: User;
-  token: string;
+  success: boolean;
+  data: {
+    user: User;
+    token: string;
+  };
+  error?: string;
 }
 
 export interface ApiResponse<T> {
