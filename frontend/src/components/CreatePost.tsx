@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Send } from 'lucide-react'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Post } from '../../../shared/types'
 
 interface CreatePostProps {
@@ -8,6 +9,7 @@ interface CreatePostProps {
 }
 
 const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
+  const { t } = useLanguage()
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -48,20 +50,20 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="content" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            What's on your mind?
+            {t('posts.postPlaceholder')}
           </label>
           <textarea
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Share your thoughts with the world..."
+            placeholder={t('posts.postPlaceholder')}
             rows={3}
             className="input-field resize-none"
             maxLength={500}
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              {content.length}/500 characters
+              {content.length}/500 {t('posts.charactersLeft')}
             </span>
           </div>
         </div>
@@ -75,7 +77,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ onPostCreated }) => {
             className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             <Send size={20} />
-            <span>{isSubmitting ? 'Posting...' : 'Post'}</span>
+            <span>{isSubmitting ? t('common.loading') : t('posts.postButton')}</span>
           </motion.button>
         </div>
       </form>

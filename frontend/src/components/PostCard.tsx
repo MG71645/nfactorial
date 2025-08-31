@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
+import { useLanguage } from '../contexts/LanguageContext'
 import { Post } from '../../../shared/types'
 import { Heart, MessageCircle, Share2, MoreHorizontal } from 'lucide-react'
 
@@ -11,11 +12,22 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const [isLiked, setIsLiked] = useState(false)
+  const [likeCount, setLikeCount] = useState(post.likes || 0)
   const [showComments, setShowComments] = useState(false)
   const [comment, setComment] = useState('')
 
-  const handleLike = async () => {
+  // Инициализируем состояние лайка при загрузке
+  useEffect(() => {
+    // Здесь можно добавить проверку, лайкнул ли пользователь этот пост
+    // Пока оставляем как есть
+  }, [post.id])
+
+  const handleLike = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
     if (!user) return
 
     try {
@@ -28,7 +40,17 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
       })
 
       if (response.ok) {
-        setIsLiked(!isLiked)
+        const newLikeState = !isLiked
+        setIsLiked(newLikeState)
+        
+        // Обновляем счетчик лайков
+        if (newLikeState) {
+          setLikeCount(prev => prev + 1)
+        } else {
+          setLikeCount(prev => Math.max(0, prev - 1))
+        }
+        
+        // Вызываем callback для обновления родительского компонента
         onUpdate()
       }
     } catch (error) {
@@ -65,13 +87,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60))
-    
-    if (diffInHours < 1) return 'Just now'
-    if (diffInHours < 24) return `${diffInHours}h ago`
-    
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+    const diffInHours = Math.floor(diffInMinutes / 60)
     const diffInDays = Math.floor(diffInHours / 24)
-    if (diffInDays < 7) return `${diffInDays}d ago`
+    
+    if (diffInMinutes < 1) return t('time.now')
+    if (diffInMinutes < 60) return t('time.minutesAgo', diffInMinutes)
+    if (diffInHours < 24) return t('time.hoursAgo', diffInHours)
+    if (diffInDays < 7) return t('time.daysAgo', diffInDays)
     
     return date.toLocaleDateString()
   }
@@ -115,6 +138,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
           {/* Like Button */}
           <button
             onClick={handleLike}
+            type="button"
             className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors duration-200 ${
               isLiked
                 ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
@@ -122,22 +146,26 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
             }`}
           >
             <Heart size={20} fill={isLiked ? 'currentColor' : 'none'} />
-            <span>{post.likes}</span>
+            <span>{likeCount}</span>
           </button>
 
           {/* Comment Button */}
           <button
             onClick={() => setShowComments(!showComments)}
+            type="button"
             className="flex items-center space-x-2 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-primary-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
           >
             <MessageCircle size={20} />
-            <span>{post.comments}</span>
+            <span>{post.comments || 0}</span>
           </button>
 
           {/* Share Button */}
-          <button className="flex items-center space-x-2 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-primary-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200">
+          <button 
+            type="button"
+            className="flex items-center space-x-2 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-primary-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
+          >
             <Share2 size={20} />
-            <span>Share</span>
+            <span>{t('posts.share')}</span>
           </button>
         </div>
       </div>
@@ -158,7 +186,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
                   type="text"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Write a comment..."
+                  placeholder={t('posts.comment')}
                   className="flex-1 input-field"
                 />
                 <button
@@ -166,7 +194,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
                   disabled={!comment.trim()}
                   className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Comment
+                  {t('posts.comment')}
                 </button>
               </div>
             </form>
@@ -176,7 +204,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
           <div className="space-y-3">
             {/* Placeholder for comments */}
             <div className="text-center text-gray-500 dark:text-gray-400 py-4">
-              Comments will appear here
+              {t('posts.comments')} {t('common.loading')}
             </div>
           </div>
         </motion.div>
